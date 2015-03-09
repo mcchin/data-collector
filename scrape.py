@@ -1,10 +1,13 @@
-import json
-
-from flask import Flask
+from flask import Flask, abort
 from flask.ext import restful
 
+from classes.config import Config
+from classes.exceptions import ApiException 
 from classes.scrape import Scrape
 from classes.report import Report
+
+cfg = Config()
+cfg.load()
 
 app = Flask(__name__)
 api = restful.Api(app)

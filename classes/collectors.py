@@ -1,5 +1,6 @@
-from TwitterSearch import *
+import time
 
+from TwitterSearch import *
 from classes.config import Config
 
 class Collector():
@@ -30,7 +31,7 @@ class Twitter():
     def __init__(self):
         print "Init twitter"
 
-    def get(self, keyword=None, lang="en"):
+    def get(self, keyword=None, lang="en", max=20):
         if (keyword):
             try:
                 tso = TwitterSearchOrder()
@@ -45,9 +46,19 @@ class Twitter():
                     Config.settings['twitter']['access_token_secret']
                 )
 
+                counter = 0 
+                sleep_at = max if max is not None else 20 
+                sleep_for = 30 
+
                 for tweet in ts.search_tweets_iterable(tso):
+                    #print( '@%s tweeted: %s' % ( tweet['user']['screen_name'].text.encode('utf-8'), tweet['text'].text.encode('utf-8') ) )
                     print tweet
-                    #print( '@%s tweeted: %s' % ( tweet['user']['screen_name'], tweet['text'] ) )
+                    counter += 1 # increase counter
+                    if counter >= sleep_at: # it's time to apply the delay
+                        counter = 0
+                        break
+                        #time.sleep(sleep_for) # sleep for n secs
+
             except TwitterSearchException as e:
                 abort(500) 
 
